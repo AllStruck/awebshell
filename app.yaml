@@ -15,6 +15,9 @@ handlers:
 - url: /
   script: index.app
 
+- url: /parse
+  script: index.app
+
 - url: /parse/.*
   script: parse.app
 

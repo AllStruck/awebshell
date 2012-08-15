@@ -19,25 +19,22 @@
 # This service converts commands to search strings, 
 # 	usually to search an external website.
 
+import cgi
 import webapp2
 from google.appengine.ext.webapp import template
-from google.appengine.ext import db
 
-class Command(db.Model): # Database model for commands
-	name = db.StringProperty( # Name of the command
-		required=True)
-	createdDate = db.DateTimeProperty( # Date and time the command was created
-		auto_now_add=True)
-	searchString = db.StringProperty( # Search string for the command
-		required=True)
-	description = db.StringProperty() # Description for the command
-	usage = db.StringProperty()
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-    	self.response.headers['Content-Type'] = "text/html"
-        self.response.out.write(
-        	template.render('main.html', {}))
+		if cgi.escape(self.request.get('try_again')):
+			tryAgain = cgi.escape(self.request.get('try_again'))
+		else:
+			tryAgain = ""
+		template_vars = {
+			'tryAgain': tryAgain
+		}
+		self.response.headers['Content-Type'] = "text/html"
+		self.response.out.write(template.render('main.html', template_vars))
 
-app = webapp2.WSGIApplication([('/', MainHandler)],
+app = webapp2.WSGIApplication([('/.*', MainHandler)],
                               debug=True)
