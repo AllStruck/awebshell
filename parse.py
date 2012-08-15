@@ -59,6 +59,7 @@ class ParseHandler(webapp2.RequestHandler):
 
 def convert_command_to_uri(query):
 	queryList = query.split()
+	queryList[0] = queryList[0].lower()
 	matchCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=queryList[0])
 	command = matchCommand.get()
 	if command:

@@ -2,17 +2,16 @@
 <head>
 	<title>awebshell</title>
 
-	<link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+	<link rel="stylesheet" type="text/css" href="stylesheet/main.css">
 </head>
 <body>
 
 	<div id="mainWrapper">
 
-		<h1 id="mainTitle">awebshell</h1>
+		<h1 id="mainTitle"><img src="/image/logo.png" alt="awebshell" /></h1>
 		
 		<form action="/parse/" method="get" accept-charset="utf-8">
 			<p><input type="text" name="q" value="{{tryAgain}}" id="query">
-			<input type="submit" value="Submit" id="submit"></p>
 		</form>
 
 		<p id="tagline">Search like you mean it!</p>
@@ -20,10 +19,20 @@
 
 		<p id="examples">
 			<span>Try it out yourself: </span>
-			<a href="/parse/q=wp+search+engine">wp (Wikipedia)</a> | 
-			<a href="/parse/q=g+awebsearch.appspot.com">g (Google)</a> |
-			<a href="/parse/q=am+oreilly">am (Amazon)</a>
+			<a href="/parse/wp+search+engine">wp (Wikipedia)</a> | 
+			<a href="/parse/g+awebsearch.appspot.com">g (Google)</a> |
+			<a href="/parse/am+oreilly">am (Amazon)</a>
 		</p>
+
+		<div id="createInstructions">
+			You can create more public commands by using the 'create' command like this:
+			<blockquote>create &lt;command&gt; &lt;url&gt;</blockquote>
+			Optionally add %s to the url where any arguments should be replaced.
+		</div>
+
+		<div id="footer">
+			<span id="copyright">&copy; AllStruck 2012</span>
+		</div>
 	</div>
 
 </body>
