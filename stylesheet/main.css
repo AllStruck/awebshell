@@ -34,7 +34,7 @@ div#createInstructions {
 	font-size: 60%;
 	margin:20px auto;
 	padding:20px;
-	width:500px;
+	width:650px;
 	background-color: #FCFF99;
 	color: #111;
 	font-weight: bolder;
@@ -46,4 +46,9 @@ div#createInstructions blockquote {
 	border: red 1px dotted;
 	color: green;
 	font-family: monospace;
+	text-align: left;
+}
+
+#footer {
+	font-size:55%;
 }
