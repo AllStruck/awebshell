@@ -65,7 +65,8 @@ def convert_command_to_uri(query):
 		searchString = command.searchString
 		if searchString.find("%s"):
 			commandRoot = queryList.pop(0)
-			commandArguments = ''.join(queryList)
+			commandArguments = queryList
+			commandArguments = '+'.join(commandArguments)
 			searchString = searchString.replace('%s', commandArguments)
 		return searchString
 
