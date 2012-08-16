@@ -15,7 +15,9 @@ div#mainWrapper {
 
 input#query {
 	width: 700px;
-	font-size: 100%;
+	font-size: 90%;
+	font-family: monospace;
+	color: green;
 }
 
 input#submit {
