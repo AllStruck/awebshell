@@ -35,9 +35,9 @@ class ParseHandler(webapp2.RequestHandler):
 		enteredCommandString = enteredCommand # Store string of entered command.
 		enteredCommand = enteredCommand.split() # Split entered command into separate words.
 
-		if enteredCommand[0] == 'create': # User wants to create a command, let's try.
+		if enteredCommand[0].lower() == 'create': # User wants to create a command, let's try.
 			self.response.write(create_new_command(enteredCommand))
-		elif enteredCommand[0] == 'ls': # User is performing a command search.
+		elif enteredCommand[0].lower() == 'ls': # User is performing a command search.
 			search = enteredCommandString[3:]
 			self.redirect('/ls/' + search)
 		else: # User is performing a command, convert it into a URI and redirect to it.
