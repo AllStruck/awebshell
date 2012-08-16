@@ -1,0 +1,16 @@
+<html>
+<head>
+	<title>awebshell - ls: List commands</title>
+</head>
+<body>
+	<h1><a href="/">awebshell</a> - list commands</h1>
+	<ul>
+	{% for command in commands %}
+		<li>{{ command.name }} => {{ command.searchString }}
+			{% if command.description %}
+				 - {{ command.description }}
+			{% endif %}
+		</li>
+	{% endfor %}
+</body>
+</html>

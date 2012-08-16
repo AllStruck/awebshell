@@ -1,62 +1,92 @@
 #!/usr/bin/env python
+#
+# Copyright 2012 AllStruck
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# This is the parse handler for awebshell.
+# Here we actually take in a command and decide how to handle it,
+#   and in most cases the entire command is handled here.
 
 import cgi
 import webapp2
 from google.appengine.ext import db
 
 
+from command import Command
 
-class Command(db.Model): # Database model for commands
-	name = db.StringProperty( # Name of the command
-		required=True)
-	createdDate = db.DateTimeProperty( # Date and time the command was created
-		auto_now_add=True)
-	searchString = db.StringProperty( # Search string for the command
-		required=True)
-	description = db.StringProperty(multiline=True) # Description for the command
-	usage = db.StringProperty(multiline=True)
-
-def commands_key(command_name=None):
-  """Constructs a Datastore key for a Command entity with command_name."""
-  return db.Key.from_path('Command', command_name or 'g')
-
+# Main handler for the parser, handles first response decisions depending on command squence provided by user.
 class ParseHandler(webapp2.RequestHandler):
 	def get(self, enteredCommand):
 		if self.request.get('q'):
-			enteredCommand = self.request.get('q')
+			enteredCommand = self.request.get('q') # Use q= gttp get var if supplied.
 
-		enteredCommandString = enteredCommand
-		enteredCommand = enteredCommand.split()
+		enteredCommandString = enteredCommand # Store string of entered command.
+		enteredCommand = enteredCommand.split() # Split entered command into separate words.
 
-		if enteredCommand[0].find('create') > -1: # user wants to create a command
-			if len(enteredCommand) > 2: # Check that both command name and URI were provided
-				commands = db.GqlQuery("SELECT * FROM Command")
-				commandAlreadyExists = False
-				for command in commands:
-					if command.name == enteredCommand[1]:
-						commandAlreadyExists = True
-				if not commandAlreadyExists:
-					if len(enteredCommand[1]) > 0 and len(enteredCommand[2]) > 5: # make sure something usable was entered for command name and search string
-						if (enteredCommand[2][0:7] == "http://") or (enteredCommand[2][0:8] == "https://"):
-							command = Command(
-								name=enteredCommand[1],
-								searchString=enteredCommand[2])
-							command.put()
-							self.response.write('<p>Created command: ' + enteredCommand[1] +
-													' => ' + enteredCommand[2] + "</p>" +
-													'<a href="/">Home</a>')
-						else: # Command URI did not begin with http:// or https://
-							self.response.write('<a href="/?try_again=' + enteredCommandString + '">Try again</a>: Command URI must begin with http:// or https://.')
-					else: # Command name and/or URI too short
-						self.response.write('<a href="/?try_again=' + enteredCommandString + '">Try again</a>: You must enter a valid command name followed by a URI.')
-				else: # Command already exists
-					self.response.write('<a href="/?try_again=' + enteredCommandString + '">Try again</a>: Command "' + enteredCommand[1] + '" already exists, please use a unique command name.')
-			else: # Command name and/or URI missing
-				self.response.write('<a href="/?try_again=' + enteredCommandString + '">Try again</a>: You must entere at least a command name followed by a URI.')
-		else: # user is performing a command
+		if enteredCommand[0] == 'create': # User wants to create a command, let's try.
+			self.response.write(create_new_command(enteredCommand))
+		elif enteredCommand[0] == 'ls': # User is performing a command search.
+			search = enteredCommandString[3:]
+			self.redirect('/ls/' + search)
+		else: # User is performing a command, convert it into a URI and redirect to it.
 			redirectURI = str(convert_command_to_uri(enteredCommandString))
 			self.redirect(redirectURI)
 
+
+# Used to create new commands when a user submits the 'create' command.
+def create_new_command(query):
+	if len(query) > 2: # Check that both command name and URI were provided.
+		enteredCommandString = ' '.join(query)
+		commands = db.GqlQuery("SELECT * FROM Command")
+		commandAlreadyExists = False
+		if (query[1] == 'create') or (query[1] == 'ls') or (query[1] == 'man'):
+			commandAlreadyExists = True
+		for command in commands:
+			if command.name == query[1]:
+				commandAlreadyExists = True
+		if not commandAlreadyExists:
+			# make sure something usable was entered for command name and search string.
+			if len(query[1]) > 0 and len(query[2]) > 5: 
+				if (query[2][0:7] == "http://") or (query[2][0:8] == "https://"):
+					command = Command(
+						name=query[1],
+						searchString=query[2])
+					command.put()
+					return ('<p>Created command: ' + query[1] +
+											' => ' + query[2] + "</p>" +
+											'<a href="/">Home</a>')
+				else: # Command URI did not begin with 'http://'' or 'https://'.
+					return ('<a href="/?try_again=' + 
+								enteredCommandString + 
+								'">Try again</a>: Command URI must begin with http:// or https://.')
+			else: # Command name and/or URI too short.
+				return ('<a href="/?try_again=' + 
+								enteredCommandString + 
+								'">Try again</a>: You must enter a valid command name followed by a URI.')
+		else: # Command already exists.
+			return ('<a href="/?try_again=' + 
+								enteredCommandString + 
+								'">Try again</a>: Command "' + 
+								query[1] + 
+								'" already exists, please use a unique command name.')
+	else: # Command name and/or URI missing.
+		return ('<a href="/?try_again=' + 
+								enteredCommandString + 
+								'">Try again</a>: You must entere at least a command name followed by a URI.')
+
+# Handles conversion of search command into a URI that can be redirected to.
 def convert_command_to_uri(query):
 	queryList = query.split()
 	queryList[0] = queryList[0].lower()

@@ -15,7 +15,10 @@
 # limitations under the License.
 #
 
-# This is the main handler for awebshell
+# This is the index (front page) handler for awebshell.
+# Here we simply show the front page with a searc field, 
+# 	and instruction and other information about the service.
+
 # This service converts commands to search strings, 
 # 	usually to search an external website.
 
@@ -34,7 +37,7 @@ class MainHandler(webapp2.RequestHandler):
 			'tryAgain': tryAgain
 		}
 		self.response.headers['Content-Type'] = "text/html"
-		self.response.out.write(template.render('main.html', template_vars))
+		self.response.out.write(template.render('template/main.html', template_vars))
 
 app = webapp2.WSGIApplication([('/.*', MainHandler)],
                               debug=True)

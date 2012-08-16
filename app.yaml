@@ -24,6 +24,14 @@ handlers:
 - url: /parse/.*
   script: parse.app
 
+- url: /ls/.*
+  script: ls.app
+- url: /ls
+  script: index.app
+
+- url: /man/.*
+  script: man.app
+
 libraries:
 - name: webapp2
   version: "2.5.1"
