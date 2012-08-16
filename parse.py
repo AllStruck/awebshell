@@ -62,7 +62,9 @@ def create_new_command(query):
 				if (query[2][0:7] == "http://") or (query[2][0:8] == "https://"):
 					command = Command(
 						name=query[1],
-						searchString=query[2])
+						searchString=query[2],
+						description='',
+						usage='')
 					command.put()
 					return ('<p>Created command: ' + query[1] +
 											' => ' + query[2] + "</p>" +
