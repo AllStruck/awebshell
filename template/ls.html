@@ -22,7 +22,7 @@
 	{% for command in commands %}
 		<li>{{ command.name }} => {{ command.searchString }}
 			<ul>
-				<li><b>Description:</b> {{ command.description }}</li>
+				<li><b>Description:</b>{% if command.description == '' %} None {% else %} {{ command.description }}{% endif %}</li>
 			</ul>
 		</li>
 	{% endfor %}
