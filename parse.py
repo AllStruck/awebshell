@@ -35,14 +35,17 @@ class ParseHandler(webapp2.RequestHandler):
 		enteredCommandString = enteredCommand # Store string of entered command.
 		enteredCommand = enteredCommand.split() # Split entered command into separate words.
 
-		if enteredCommand[0].lower() == 'create': # User wants to create a command, let's try.
-			self.response.write(create_new_command(enteredCommand))
-		elif enteredCommand[0].lower() == 'ls': # User is performing a command search.
-			search = enteredCommandString[3:]
-			self.redirect('/ls/' + search)
-		else: # User is performing a command, convert it into a URI and redirect to it.
-			redirectURI = str(convert_command_to_uri(enteredCommandString))
-			self.redirect(redirectURI)
+		if len(enteredCommand) > 0:
+			if enteredCommand[0].lower() == 'create': # User wants to create a command, let's try.
+				self.response.write(create_new_command(enteredCommand))
+			elif enteredCommand[0].lower() == 'ls': # User is performing a command search.
+				search = enteredCommandString[3:]
+				self.redirect('/ls/' + search)
+			else: # User is performing a command, convert it into a URI and redirect to it.
+				redirectURI = str(convert_command_to_uri(enteredCommandString))
+				self.redirect(redirectURI)
+		else:
+			self.redirect("/")
 
 
 # Used to create new commands when a user submits the 'create' command.
@@ -51,8 +54,6 @@ def create_new_command(query):
 		enteredCommandString = ' '.join(query)
 		commands = db.GqlQuery("SELECT * FROM Command")
 		commandAlreadyExists = False
-		if (query[1] == 'create') or (query[1] == 'ls') or (query[1] == 'man'):
-			commandAlreadyExists = True
 		for command in commands:
 			if command.name == query[1]:
 				commandAlreadyExists = True
@@ -64,7 +65,8 @@ def create_new_command(query):
 						name=query[1],
 						searchString=query[2],
 						description='',
-						usage='')
+						usage='',
+						builtin='no')
 					command.put()
 					return ('<p>Created command: ' + query[1] +
 											' => ' + query[2] + "</p>" +
