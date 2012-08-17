@@ -7,9 +7,9 @@
 	<ul>
 	{% for command in commands %}
 		<li>{{ command.name }} => {{ command.searchString }}
-			{% if command.description %}
-				 - {{ command.description }}
-			{% endif %}
+			<ul>
+				<li><b>Description:</b> {{ command.description }}</li>
+			</ul>
 		</li>
 	{% endfor %}
 </body>
