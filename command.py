@@ -14,3 +14,4 @@ class Command(db.Model):
 		required=True)
 	description = db.StringProperty(multiline=True) # Description for the command.
 	usage = db.StringProperty(multiline=True)
+	builtin = db.StringProperty()
