@@ -5,6 +5,10 @@ body {
 	font-family: "Baskerville";
 }
 
+a:visited {
+	color: #D3545D;
+}
+
 h1#mainTitle {
 	color: #2E2E2E;
 }
