@@ -35,8 +35,11 @@ class ListHandler(webapp2.RequestHandler):
     		results = []
     		for command in commands:
     			if (command.name.find(search) > -1) or\
-    			(command.searchString.find(search) > 1):
+    			(command.searchString.find(search) > -1):
     				results.append(command)
+    			if command.description:
+    				if command.description.find(search):
+    					results.append(command)
 
 
     		#commands = db.GqlQuery("SELECT * FROM Command")
