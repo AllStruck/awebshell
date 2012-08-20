@@ -2,6 +2,8 @@
 <head>
 	<title>awebshell - ls: List commands</title>
 
+	<link rel="stylesheet" type="text/css" href="/stylesheet/ls.css">
+
 	<script type="text/javascript">
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-34105964-1']);
@@ -17,12 +19,14 @@
 	</script>	
 </head>
 <body>
-	<h1><a href="/">awebshell</a> - list commands</h1>
-	<ul>
+	<h1><a href="/"><img src="/image/logo.png" alt="awebshell" width="250px"/></a> - list commands</h1>
+	<ul id="commandsListing">
 	{% for command in commands %}
-		<li>{{ command.name }} => {{ command.searchString }}
-			<ul>
-				<li><b>Description:</b>{% if command.description == '' %} None {% else %} {{ command.description }}{% endif %}</li>
+		<li class="commandWrapper">
+			<span class="commandName">{{ command.name }}</span>
+			<ul class="commandDescription">
+				<li><span class="bold">Search String:</span> <span class="searchString">{{ command.searchString }}</span>
+				<li><span class="bold">Description:</span>{% if command.description == '' %} None {% else %} {{ command.description }}{% endif %}</li>
 			</ul>
 		</li>
 	{% endfor %}

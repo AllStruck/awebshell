@@ -1,0 +1,45 @@
+body {
+	font-size: 20pt;
+	font-family: "Baskerville"
+}
+a:visited {
+	color: #D3545D;
+}
+h1 {
+	font-size: 120%;
+}
+
+ul#commandsListing {
+	list-style: none;
+}
+
+ul#commandsListing li {
+	list-style: none;
+	margin-left:40px !important;
+}
+ul#commandsListing>li {
+	margin: 20px;
+}
+
+ul#commandsListing li.commandWrapper {
+	padding:10pt 25pt;
+	background: #D7E4F5;
+	border-radius: 150px;
+}
+
+ul#commandsListing li.commandWrapper span.commandName {
+	font-size: 200%;
+	border-radius:50%;
+	padding:20pt;
+	background-color:white;
+}
+
+ul#commandsListing li.commandWrapper span.searchString {
+	font-style: italic;
+}
+
+
+
+span.bold {
+	font-weight: bold;
+}
