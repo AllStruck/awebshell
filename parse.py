@@ -32,6 +32,10 @@ class ParseHandler(webapp2.RequestHandler):
 		if self.request.get('q'):
 			enteredCommand = self.request.get('q') # Use q= gttp get var if supplied.
 
+		enteredCommand = enteredCommand.replace('+', ' ')
+		enteredCommand = enteredCommand.replace('&#43;', ' ')
+		enteredCommand = enteredCommand.replace('%20', ' ')
+
 		enteredCommandString = enteredCommand # Store string of entered command.
 		enteredCommand = enteredCommand.split() # Split entered command into separate words.
 
