@@ -38,7 +38,7 @@ class ListHandler(webapp2.RequestHandler):
     			(command.searchString.find(search) > -1):
     				results.append(command)
     			if command.description:
-    				if command.description.find(search):
+    				if command.description.find(search) > -1:
     					results.append(command)
 
 
