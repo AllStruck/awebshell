@@ -19,9 +19,10 @@
 # Here we actually take in a command and decide how to handle it,
 #   and in most cases the entire command is handled here.
 
-import cgi
-import webapp2
 from google.appengine.ext import db
+import urllib
+import webapp2
+import logging
 
 
 from command import Command
@@ -36,7 +37,7 @@ class ParseHandler(webapp2.RequestHandler):
 		enteredCommand = enteredCommand.replace('&#43;', ' ')
 		enteredCommand = enteredCommand.replace('%20', ' ')
 
-		enteredCommandString = enteredCommand # Store string of entered command.
+		enteredCommandString = urllib.quote(enteredCommand.encode('utf-8'), ' /') # Store string of entered command.
 		enteredCommand = enteredCommand.split() # Split entered command into separate words.
 
 		if len(enteredCommand) > 0:
@@ -46,8 +47,9 @@ class ParseHandler(webapp2.RequestHandler):
 				search = enteredCommandString[3:]
 				self.redirect('/ls/' + search)
 			else: # User is performing a command, convert it into a URI and redirect to it.
-				redirectURI = str(convert_command_to_uri(enteredCommandString))
-				self.redirect(redirectURI)
+				redirectURI = convert_command_to_uri(enteredCommandString)
+				logging.info("Redirecting to: " + redirectURI)
+				self.redirect(str(redirectURI))
 		else:
 			self.redirect("/")
 
@@ -92,14 +94,15 @@ def create_new_command(query):
 	else: # Command name and/or URI missing.
 		return ('<a href="/?try_again=' + 
 								enteredCommandString + 
-								'">Try again</a>: You must entere at least a command name followed by a URI.')
+								'">Try again</a>: You must enter at least a command name followed by a URI.')
 
 # Handles conversion of search command into a URI that can be redirected to.
 def convert_command_to_uri(query):
+	logging.info('Query = ' + query)
 	queryList = query.split()
 	queryList[0] = queryList[0].lower()
-	matchCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=queryList[0])
-	command = matchCommand.get()
+	matchedCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=queryList[0])
+	command = matchedCommand.get()
 	if command:
 		searchString = command.searchString
 		if searchString.find("%s"):
@@ -109,7 +112,7 @@ def convert_command_to_uri(query):
 			searchString = searchString.replace('%s', commandArguments)
 		return searchString
 
-	return 'http://google.com/search?q=' + query
+	return str('http://google.com/search?q=' + query)
 
 app = webapp2.WSGIApplication([(r'/parse/(.*)', ParseHandler)],
                               debug=True)
