@@ -25,6 +25,8 @@
 import cgi
 import webapp2
 from google.appengine.ext.webapp import template
+import datetime
+
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -33,8 +35,11 @@ class MainHandler(webapp2.RequestHandler):
 			tryAgain = cgi.escape(self.request.get('try_again'))
 		else:
 			tryAgain = ""
+		
+		now = datetime.datetime.now()
 		template_vars = {
-			'tryAgain': tryAgain
+			'tryAgain': tryAgain,
+			'currentYear': now.year
 		}
 		self.response.headers['Content-Type'] = "text/html"
 		self.response.out.write(template.render('template/index.html', template_vars))

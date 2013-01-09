@@ -43,3 +43,7 @@ ul#commandsListing li.commandWrapper span.searchString {
 span.bold {
 	font-weight: bold;
 }
+
+#footer {
+	text-align:center;
+}

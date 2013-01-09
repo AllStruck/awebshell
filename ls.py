@@ -25,6 +25,7 @@ import cgi
 import webapp2
 from google.appengine.ext import db
 from google.appengine.ext.webapp import template
+import datetime
 
 from command import Command
 
@@ -46,8 +47,10 @@ class ListHandler(webapp2.RequestHandler):
     	else:
     		results = db.GqlQuery("SELECT * FROM Command")
 
+        now = datetime.datetime.now()
     	template_vars = {
-    		'commands': results
+    		'commands': results,
+            'currentYear': now.year
     	}
     	self.response.headers['Content-Type'] = "text/html"
     	self.response.out.write(template.render('template/ls.html', template_vars))
