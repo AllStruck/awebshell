@@ -1,0 +1,14 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+<script/>
+<!--  Created on Tue, 06 Jan 2009 14:48:07 GMT  -->
+<ShortName>awebshell</ShortName>
+<Description>awebshell - </Description>
+<Url type="text/html" method="get" template="http://awebshell.appspot.com/parse/?q={searchTerms}"/>
+
+<Image width="16" height="16">
+http://awebshell.appspot.com/favicon.ico
+</Image>
+<Developer>David Monaghan</Developer>
+<InputEncoding>UTF-8</InputEncoding>
+<moz:SearchForm>http://awebshell.appspot.com/</moz:SearchForm>
+</OpenSearchDescription>

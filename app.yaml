@@ -9,6 +9,10 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /opensearch\.xml
+  static_files: opensearch.xml
+  upload: opensearch.xml
+
 - url: /stylesheet
   static_dir: stylesheet
 
