@@ -23,6 +23,8 @@ from google.appengine.ext import db
 import urllib
 import webapp2
 import logging
+import httplib
+import uuid
 
 
 from command import Command
@@ -47,6 +49,9 @@ class ParseHandler(webapp2.RequestHandler):
 				search = enteredCommandString[3:]
 				self.redirect('/ls/' + search)
 			else: # User is performing a command, convert it into a URI and redirect to it.
+				# Send hit to Google Analytics, since we're not displaying a page...
+				thisUUID = uuid.uuid4()
+				httplib.HTTPConnection('www.google-analytics.com/collect/?v=1&tid=UA-34105964-1&cid=thisUUID&an=awebshell&t=event&ec=parse&ea=redirected', 80, timeout=10)
 				redirectURI = convert_command_to_uri(enteredCommandString)
 				logging.info("Redirecting to: " + redirectURI)
 				self.redirect(str(redirectURI))
