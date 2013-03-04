@@ -62,7 +62,7 @@ class ParseHandler(webapp2.RequestHandler):
 				try:
 					logging.info('enteredCommandString = ' + repr(enteredCommandString))
 					final_url, can_inline = self.__web_shell.evaluate(enteredCommandString)
-					self.redirect(final_url)
+					self.redirect(final_url.encode('utf-8'))
 				except WebShellError, web_shell_error:
 					exception_name = web_shell_error.__class__.__name__
 					error_message = str(web_shell_error)
@@ -130,11 +130,11 @@ class GqlCommandDatabase:
 		logging.info('Command Name = ' + command_name)
 		command_name = command_name.lower()
 		matchedCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=command_name).get()
-		if (matched_command):
+		if (matchedCommand):
 			web_shell_url = matchedCommand.searchString
 			logging.info('web_shell_url = ' + repr(web_shell_url))
 			assert type(web_shell_url) in (types.StringType, types.UnicodeType)
-			return (web_shell_url, False)
+			return web_shell_url
 		else:
 			raise UnknownCommandError("Error: command '%s' not found in the database." % command_name)
 
