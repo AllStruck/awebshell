@@ -26,18 +26,23 @@ import logging
 import httplib
 import uuid
 
+from awebshell import WebShell, WebShellError, UnknownCommandError
 
 from command import Command
 
 # Main handler for the parser, handles first response decisions depending on command squence provided by user.
 class ParseHandler(webapp2.RequestHandler):
+	def __init__(self):
+		webapp2.RequestHandler.__init__(self)
+		self.__command_database = GqlCommandDatabase()
+		self.__web_shell = WebShell(command_database)
 	def get(self, enteredCommand):
 		if self.request.get('q'):
 			enteredCommand = self.request.get('q') # Use q= gttp get var if supplied.
 
-		enteredCommand = enteredCommand.replace('+', ' ')
-		enteredCommand = enteredCommand.replace('&#43;', ' ')
-		enteredCommand = enteredCommand.replace('%20', ' ')
+		#enteredCommand = enteredCommand.replace('+', ' ')
+		#enteredCommand = enteredCommand.replace('&#43;', ' ')
+		#enteredCommand = enteredCommand.replace('%20', ' ')
 
 		enteredCommandString = urllib.quote(enteredCommand.encode('utf-8'), ' /') # Store string of entered command.
 		enteredCommand = enteredCommand.split() # Split entered command into separate words.
@@ -52,7 +57,20 @@ class ParseHandler(webapp2.RequestHandler):
 				# Send hit to Google Analytics, since we're not displaying a page...
 				thisUUID = uuid.uuid4()
 				httplib.HTTPConnection('www.google-analytics.com/collect/?v=1&tid=UA-34105964-1&cid=thisUUID&an=awebshell&t=event&ec=parse&ea=redirected', 80, timeout=10)
-				redirectURI = convert_command_to_uri(enteredCommandString)
+				
+				try:
+					final_url, can_inline = self.__web_shell.evaluate(enteredCommandString)
+					self.redirect(final_url)
+				except WebShellError, web_shell_error:
+					exception_name = web_shell_error.__class__.__name__
+					error_message = str(web_shell_error)
+					logging.info('ERROR: ' + exception_name + ': ' + error_message)
+					#TODO: do something about error, like display the error message and offer a new command entry
+					
+					
+					self.redirect('http://google.com/search?q=' + urllib.quote(enteredCommandString)) #ZZZ default to google search on error.
+				
+				redirectURI, can_inline = web_shell.evaluate(enteredCommandString)
 				logging.info("Redirecting to: " + redirectURI)
 				self.redirect(str(redirectURI))
 		else:
@@ -101,23 +119,28 @@ def create_new_command(query):
 								enteredCommandString + 
 								'">Try again</a>: You must enter at least a command name followed by a URI.')
 
-# Handles conversion of search command into a URI that can be redirected to.
-def convert_command_to_uri(query):
-	logging.info('Query = ' + query)
-	queryList = query.split()
-	queryList[0] = queryList[0].lower()
-	matchedCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=queryList[0])
-	command = matchedCommand.get()
-	if command:
-		searchString = command.searchString
-		if searchString.find("%s"):
-			commandRoot = queryList.pop(0)
-			commandArguments = queryList
-			commandArguments = '+'.join(commandArguments)
-			searchString = searchString.replace('%s', commandArguments)
-		return searchString
 
-	return str('http://google.com/search?q=' + query)
+class GqlCommandDatabase:
+	def __init__(self):
+		pass
+	
+	# Handles conversion of search command into a URI that can be redirected to.
+	def get_command_web_shell_url(self, command_name):
+		logging.info('Command Name = ' + command_name)
+		command_name = command.lower()
+		matchedCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=command_name)
+		command = matchedCommand.get()
+		if command:
+			searchString = command.searchString
+			if searchString.find("%s"):
+				commandRoot = queryList.pop(0)
+				commandArguments = queryList
+				commandArguments = '+'.join(commandArguments)
+				searchString = searchString.replace('%s', commandArguments)
+			return (searchString, False)
+		else:
+			raise UnknownCommandError("Error: command '%s' not found in the database." % command_name)
+
 
 app = webapp2.WSGIApplication([(r'/parse/(.*)', ParseHandler)],
                               debug=True)
