@@ -129,15 +129,9 @@ class GqlCommandDatabase:
 		logging.info('Command Name = ' + command_name)
 		command_name = command.lower()
 		matchedCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=command_name)
-		command = matchedCommand.get()
-		if command:
-			searchString = command.searchString
-			if searchString.find("%s"):
-				commandRoot = queryList.pop(0)
-				commandArguments = queryList
-				commandArguments = '+'.join(commandArguments)
-				searchString = searchString.replace('%s', commandArguments)
-			return (searchString, False)
+		web_shell_url = matchedCommand.get()
+		if web_shell_url:
+			return (web_shell_url, False)
 		else:
 			raise UnknownCommandError("Error: command '%s' not found in the database." % command_name)
 
