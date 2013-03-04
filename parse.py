@@ -129,11 +129,11 @@ class GqlCommandDatabase:
 	def get_command_web_shell_url(self, command_name):
 		logging.info('Command Name = ' + command_name)
 		command_name = command_name.lower()
-		matchedCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=command_name)
-		web_shell_url = matchedCommand.get().searchString
-		logging.info('web_shell_url = ' + repr(web_shell_url))
-		assert type(web_shell_url) in (types.StringType, types.UnicodeType)
-		if web_shell_url:
+		matchedCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=command_name).get()
+		if (matched_command):
+			web_shell_url = matchedCommand.searchString
+			logging.info('web_shell_url = ' + repr(web_shell_url))
+			assert type(web_shell_url) in (types.StringType, types.UnicodeType)
 			return (web_shell_url, False)
 		else:
 			raise UnknownCommandError("Error: command '%s' not found in the database." % command_name)

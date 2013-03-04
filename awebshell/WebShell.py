@@ -31,6 +31,7 @@ __all__ = ['WebShell']
 #validate URLs
 import re
 import urllib
+import types
 
 
 KEY_NAME_STRING_REGEX_STRING = r'[_A-Za-z][_A-Za-z0-9]*'
@@ -142,6 +143,7 @@ class WebShell:
 		can_inline = (name in WebShell.INLINE_COMMANDS_SET)
 		
 		web_shell_url = self.__command_database.get_command_web_shell_url(name)
+		assert(type(web_shell_url) in (types.StringType, types.UnicodeType)) #ensure database is following proper protocol
 		
 		return (web_shell_url, can_inline) #ZZZ stub
 
@@ -188,8 +190,11 @@ class WebShell:
 
 	
 	def __execute_web_shell_url(self, web_shell_url, raw_argument_text):
+		assert type(web_shell_url) in (types.StringType, types.UnicodeType)
+	
 		#print web_shell_url
 		web_shell_url, options = self.__strip_web_shell_url_options(web_shell_url)
+		assert type(web_shell_url) in (types.StringType, types.UnicodeType)
 		
 		raw_argument_text, arguments = self.__parse_command_arguments(raw_argument_text)			
 
@@ -291,6 +296,7 @@ class WebShell:
 	
 	
 	def __strip_web_shell_url_options(self, web_shell_url):
+		assert type(web_shell_url) in (types.StringType, types.UnicodeType)
 		
 		options = {}
 		
@@ -322,7 +328,8 @@ class WebShell:
 			p0, p1 = match_result.regs[0]
 			web_shell_url = web_shell_url[0:p0] + web_shell_url[p1:]
 
-
+		
+		assert type(web_shell_url) in (types.StringType, types.UnicodeType)
 
 		return (web_shell_url, options)
 	
