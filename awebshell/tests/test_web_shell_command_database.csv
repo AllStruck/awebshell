@@ -19,5 +19,5 @@ dcfm,http://www.docufarm.com/index.jsp?start=0&q=%s&filetype=all
 where,http://www.dnsstuff.com/tools/ipall.ch?ip=%s
 wimi,http://www.wikimindmap.org/viewmap.php?wiki=${lang=en}.wikipedia.org&topic=%s&Submit=Search
 jscalc,script document.write(%s) [no url encoding],ZZZ I don't handle this form yet!!!
-example,http://example.com
+example,http://example.com/
 goto,http://www.google.com/search?q=%s&btnI

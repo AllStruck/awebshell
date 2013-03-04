@@ -51,12 +51,17 @@ import webbrowser
 
 
 
+
 #ZZZ this is a little bit of a hack. Let's leave this in until we get this directory structure figured out.
 try:
 	import awebshell
 except ImportError:
 	sys.path.insert(0, os.path.join('..', '..')) #ensure awebshell library is importable, especially if it hasn't been installed yet.
 	import awebshell
+
+# GQL Commands
+# from google.appengine.ext import db
+# from command import Command
 
 
 #import required awebshell library functionality ----
@@ -89,6 +94,10 @@ def run_interactive_shell(command_database):
 				webbrowser_enabled = True
 			elif (raw_query.strip() == 'webbrowser=disabled'):
 				webbrowser_enabled = False
+			elif (raw_query.strip() == 'burn-new-test-db-csv-to-gql'):
+				burn_new_test_db_csv_to_gql()
+			elif (raw_query.strip() == 'burn-live-db-gql-to-csv'):
+				burn_live_db_gql_to_csv()
 			else:
 			
 				try:
@@ -119,12 +128,33 @@ def run_interactive_shell(command_database):
 	except KeyboardInterrupt:
 		pass
 
+def burn_new_test_db_csv_to_gql():
+	csv_rows = array();
 
+	# Delete existing GQL database:
+	existingCommands = Command.all()
+	for command in existingCommands:
+	    print "GQL: -" + command.name
+	    command.delete()
+
+	for row in csv_rows:
+		print "GQL: +" + row.name
+		command = Command(
+			name=row.name,
+			searchString=row.searchString,
+			description='',
+			usage='',
+			builtin='no')
+		command.put()
+
+def burn_live_db_gql_to_csv():
+	print "Too tired... ZZZ"
+		
 
 def main():
 	
 	
-	csv_filename = os.path.join(os.path.dirname(sys.argv[0]), '..', 'tests', 'test_web_shell_command_database.csv') #TODO: un-hardcode this.
+	csv_filename = os.path.join(os.path.dirname(sys.argv[0]), 'awebshell/', 'tests', 'test_web_shell_command_database.csv') #TODO: un-hardcode this.
 	command_database = CSVCommandDatabase(csv_filename)
 	
 	arg_count = len(sys.argv)
