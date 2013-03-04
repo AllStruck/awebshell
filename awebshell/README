@@ -1,0 +1,107 @@
+awebshell - a library for quickly accessing web pages with short command line interface-style commands.
+
+Written by Lee Bush.
+
+Maintainer: David Monaghan <awebshell@allstruck.com>.
+
+See __init__.py for more details.
+
+
+
+EXAMPLE:
+   There is a 'gim' command that does a Google Image search.
+   'gim' coresponds to a Web Shell URL 'http://images.google.com/images?q=%s' in a Command Database.
+   When the Web Shell URL is evaluated with the arguments 'baby penguins', the following final URL is
+   evaluated:
+     'http://images.google.com/images?q=baby+penguins'
+
+   The code to perform this example would be:
+     
+     import awebshell
+     
+     from awebshell.database.CSVCommandDatabase import CSVCommandDatabase #select the CSV implementation of the command database protocol.
+                                                                          #other database implementations are available.
+     command_database = CSVCommandDatabase('<put the path to the CSV file here>/test_web_shell_command_database.csv')
+     
+     web_shell = WebShell(command_database)
+     
+     command = 'gim baby penguins'
+     
+     final_url, can_inline = web_shell.evaluate(command)
+     
+     print final_url #prints http://images.google.com/images?q=baby+penguins
+     
+     #(the can_inline variable can be ignored except for advanced use)
+     
+     #now, if you want to point your webbrowser to that webpage you could run...
+     import webbrowser
+     webbrowser.open(final_url) #pictures of cute little penguins appear in you web browswer. So cute!
+
+
+LICENSE:
+
+Apache 2.0
+
+   
+
+ACKNOWLEDGEMENTS:
+
+This library's functionality was inspired heavily by the 'yubnub' Ruby on Rails project.
+
+
+
+PLATFORMS SUPPORTED:
+
+This library is platform independent and should run fine on any platform.
+
+
+
+LIBRARY DOCUMENTATION:
+
+For now, just read the documentation in these files:
+   ./__init__.py
+   ./WebShell.py
+   
+...And look at the demo application source code:
+   ./apps/awebshell_console_app.py
+
+
+
+MAIN FOLDERS:
+
+* 'tests/'  contains the test cases and test rig.
+
+  You can run the tests using the following commands:
+     cd ./tests/
+     python ./run_test_cases.py
+
+
+
+* 'apps/'  contains apps that demonstrate the library's functionality.
+
+   You can run the demo program by running the following commands
+     cd ./apps/
+     python ./awebshell_console_app.py
+   
+   This will present you with an interactive interface:
+   
+   
+     --------------------------------------------------------------------------------
+     Welcome to the AWebShell Console.
+     
+     Type 'webbrowser=disabled' if you wish to disable browser control.
+     --------------------------------------------------------------------------------
+     
+     
+     > 
+
+   You can now type in awebshell commands. For example:
+   
+    > gim baby penguins
+    
+   ...Will launch your web browser and run a Google Image search for pictures of baby penguins.
+   How cute!
+   
+
+
+

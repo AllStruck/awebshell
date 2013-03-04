@@ -1,0 +1,21 @@
+name,web_shell_url
+g,http://www.google.com/search?q=%s
+gim,http://images.google.com/images?q=%s
+gloc,http://www.google.com/local?sc=1&hl=en&q=${what}&near=${where}&btnG=Google+Search&rl=1
+gloc_2,"http://www.google.com/local?sc=1&hl=en&q=${what=tennis shoes}&near=${where=Washington, DC}&btnG=Google+Search&rl=1"
+stlclib,http://webpac.slcl.org/search/~a?a&searchtype=Y&searcharg=%s&searchscope=22[post]
+nlb,http://vistaweb.nlb.gov.sg/cgi-bin/cw_cgi?10100+REDIRX+useDatabase_3002_w_%s[use %20 for spaces]
+arch,http://web.archive.org/web/*/%s[no url encoding]
+arch_BAD_WITH_URL_ENCODING,http://web.archive.org/web/*/%s
+gamefaqs,"http://www.gamefaqs.com/search/index.html?game=%s&platform={ switch ${plat} | xbox => 13, dreamcast => 1, * => 0 }"
+wp,http://en.wikipedia.org/?search=%s
+wpms,http://mobile.wikipedia.org/{eop transcode.php?go=@%s@},ZZZ NOT HANDLED YET! NEED eop...
+streetview,http://maps.google.com/maps?q=%s&layer=c&z=17&iwloc=A&sll=41.351200,-106.285865&cbp=13,278.7,0,0,0&cbll=41.351187,-106.285748&ved=0CA0Q2wU&sa=X&ei=XLUfTaSvHKLUzATo9Zz5AQ
+saveword,http://saraswaticlasses.net/saveword.php?uri=%s
+gx,http://www.google.com/search?q=%2B{strReplace -find + -replace +%2B -string %s},ZZZ strReplace not handled yet
+gjdoc,http://www.google.com/search?hl=en&lr=&as_qdr=all&q=%s${s}+site%3Ajava.sun.com%2F${ed=j2se}%2F${ver=1.5.0}%2Fdocs%2Fapi%2F&btn{switch ${qk}|true=>I, 1=>I, yes=>I, *=>G}= Search
+ucc,http://www.xe.com/ucc/convert.cgi?Amount={% 1 %s}&From={% 2 %s}&To={% 3 %s}[no url encoding]
+dcfm,http://www.docufarm.com/index.jsp?start=0&q=%s&filetype=all
+where,http://www.dnsstuff.com/tools/ipall.ch?ip=%s
+wimi,http://www.wikimindmap.org/viewmap.php?wiki=${lang=en}.wikipedia.org&topic=%s&Submit=Search
+jscalc,script document.write(%s) [no url encoding],ZZZ I don't handle this form yet!!!
