@@ -1,5 +1,5 @@
 command,result_url
-gim porsche 911,http://images.google.com/images?q=porsche+911
+gim mclaren f1,http://images.google.com/images?q=mclaren+f1
 "gloc -what pizza -where Poughkeepsie, NY",http://www.google.com/local?sc=1&hl=en&q=pizza&near=Poughkeepsie%2C+NY&btnG=Google+Search&rl=1
 "gloc_2 -where Poughkeepsie, NY",http://www.google.com/local?sc=1&hl=en&q=tennis+shoes&near=Poughkeepsie%2C+NY&btnG=Google+Search&rl=1
 nlb harry potter,http://vistaweb.nlb.gov.sg/cgi-bin/cw_cgi?10100+REDIRX+useDatabase_3002_w_harry%20potter
