@@ -8,3 +8,5 @@ arch http://www.ing.be/,http://web.archive.org/web/*/http://www.ing.be/
 arch_BAD_WITH_URL_ENCODING http://www.ing.be/,http://web.archive.org/web/*/http%3A%2F%2Fwww.ing.be%2F
 gamefaqs Ninja Gaiden,http://www.gamefaqs.com/search/index.html?game=Ninja+Gaiden&platform=0
 gamefaqs Ninja Gaiden -plat xbox,http://www.gamefaqs.com/search/index.html?game=Ninja+Gaiden&platform=13
+example,http://example.com
+example poop,http://example.com

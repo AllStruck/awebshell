@@ -25,6 +25,7 @@ import webapp2
 import logging
 import httplib
 import uuid
+import types
 
 from awebshell import WebShell, WebShellError, UnknownCommandError
 
@@ -32,10 +33,10 @@ from command import Command
 
 # Main handler for the parser, handles first response decisions depending on command squence provided by user.
 class ParseHandler(webapp2.RequestHandler):
-	def __init__(self):
-		webapp2.RequestHandler.__init__(self)
+	def __init__(self, *args, **kwargs):
+		webapp2.RequestHandler.__init__(self, *args, **kwargs)
 		self.__command_database = GqlCommandDatabase()
-		self.__web_shell = WebShell(command_database)
+		self.__web_shell = WebShell(self.__command_database)
 	def get(self, enteredCommand):
 		if self.request.get('q'):
 			enteredCommand = self.request.get('q') # Use q= gttp get var if supplied.
@@ -59,6 +60,7 @@ class ParseHandler(webapp2.RequestHandler):
 				httplib.HTTPConnection('www.google-analytics.com/collect/?v=1&tid=UA-34105964-1&cid=thisUUID&an=awebshell&t=event&ec=parse&ea=redirected', 80, timeout=10)
 				
 				try:
+					logging.info('enteredCommandString = ' + repr(enteredCommandString))
 					final_url, can_inline = self.__web_shell.evaluate(enteredCommandString)
 					self.redirect(final_url)
 				except WebShellError, web_shell_error:
@@ -70,9 +72,8 @@ class ParseHandler(webapp2.RequestHandler):
 					
 					self.redirect('http://google.com/search?q=' + urllib.quote(enteredCommandString)) #ZZZ default to google search on error.
 				
-				redirectURI, can_inline = web_shell.evaluate(enteredCommandString)
-				logging.info("Redirecting to: " + redirectURI)
-				self.redirect(str(redirectURI))
+				# logging.info("Redirecting to: " + redirectURI)
+				# self.redirect(str(redirectURI))
 		else:
 			self.redirect("/")
 
@@ -127,9 +128,11 @@ class GqlCommandDatabase:
 	# Handles conversion of search command into a URI that can be redirected to.
 	def get_command_web_shell_url(self, command_name):
 		logging.info('Command Name = ' + command_name)
-		command_name = command.lower()
+		command_name = command_name.lower()
 		matchedCommand = db.GqlQuery("SELECT * FROM Command WHERE name = :name", name=command_name)
-		web_shell_url = matchedCommand.get()
+		web_shell_url = matchedCommand.get().searchString
+		logging.info('web_shell_url = ' + repr(web_shell_url))
+		assert type(web_shell_url) in (types.StringType, types.UnicodeType)
 		if web_shell_url:
 			return (web_shell_url, False)
 		else:
