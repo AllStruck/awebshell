@@ -3,6 +3,7 @@
 # run_test_cases.py - Test the awebshell library.
 #
 # Copyright 2013 Lee Bush. All rights reserved.
+# Copyright 2013 Michael Jeffrey. All rights reserved.
 # Copyright 2013 AllStruck. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +38,7 @@ import os
 sys.path.insert(0, os.path.join('..', '..')) #ensure awebshell library is importable, especially if it hasn't been installed yet.
 
 
-from awebshell import WebShell, WebShellError
+from awebshell import WebShell, WebShellError, WebShellUrlParser, WebShellUrlParserException
 from awebshell.database.CSVCommandDatabase import CSVCommandDatabase #select the CSV implementatoin of the command database protocol.
 
 
@@ -61,7 +62,7 @@ def run_test_cases(command_database_filename, test_cases_filename):
 		if (row[0].strip()):
 				command = row[0].strip()
 				if (command.find('\xc2') != -1 or command.find('\xa0') != -1): #detects some garbage that LibreOffice Calc or MS Excel left in the .csv file.
-					raise Exception('bad command string in input file (bad characters): ' + repr(command))
+					raise Exception(test_cases_filename + ':' + str(row_number) + ' - ' + 'bad command string in input file (bad characters): ' + repr(command))
 				expected_result = row[1].strip()
 		
 		try:
@@ -90,11 +91,63 @@ def run_test_cases(command_database_filename, test_cases_filename):
 	
 	csv_file.close()
 	
+	print
+	print "WebShell"
 	print failures, 'failures'
 	print successes, 'successes'
 	
 	if (failures > 0):
 		sys.exit(1)
+
+def test_parser():
+	TEST_CASES = \
+	[ \
+		('asd', "T['asd']"), # string
+		('def {cdb}', "T['def ', T['cdb']]"), # string followed by command
+		('def ${cdb}', "T['def ', ${cdb}]"), # string followed by variable
+		('def {cdb def}', "T['def ', T['cdb', 'def']]"), # string followed by command with argument
+		('def {cdb def hij}', "T['def ', T['cdb', 'def', 'hij']]"), # string followed by command with two argument
+		('{cdb def}', "T[T['cdb', 'def']]"), # command with argument
+		('{${var}abc}', "T[T[T['concatenate', ${var}, 'abc']]]"), # concatenation works within command
+		('${var}abc', "T[T['concatenate', ${var}, 'abc']]"), # concatenation works properly at root level
+		('}', WebShellUrlParserException), # close bracket as first character
+		('{${var}abc {jkaf slkd', WebShellUrlParserException),
+	]
+
+	number_of_test_cases = 0
+	number_of_test_case_failures = 0
+
+
+	for web_shell_url, expected in TEST_CASES:
+
+		# print web_shell_url
+		parser = WebShellUrlParser()
+		try:
+			tree = parser.build_tree(web_shell_url)
+			actual = str(tree)
+			if (actual != expected):
+				print 'EX: ' + expected
+				print 'AC: ' + actual
+				print 'ERROR!-----------------'
+				number_of_test_case_failures += 1
+		except WebShellUrlParserException, wsupe:
+			if expected is WebShellUrlParserException:
+				# print 'EX: (WebShellUrlParserException)'
+				# print 'AC: (WebShellUrlParserException)'
+				pass
+			else:
+				print 'EX: ' + expected
+				print 'AC: ' + 'ERROR: ' + str(wsupe)
+				print 'ERROR!-----------------'	
+				number_of_test_case_failures += 1
+		# print
+		# print
+		number_of_test_cases += 1
+	print
+	print "WebShellUrlParser"
+	print number_of_test_case_failures, "failures" 
+	print number_of_test_cases - number_of_test_case_failures, "successes"
 	
 if __name__ == '__main__':
 	run_test_cases('test_web_shell_command_database.csv', 'test_cases.csv')
+	test_parser()

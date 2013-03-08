@@ -1,6 +1,21 @@
-#!/usr/bin/python
-# COPYRIGHT Michael Jeffrey, Lee Bush
-# All Rights Reserved
+# parser.py - class for parsing awebshell commands
+#
+# Copyright 2013 Lee Bush. All rights reserved.
+# Copyright 2013 Michael Jeffrey. All rights reserved.
+# Copyright 2013 AllStruck. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 # WILD IDEA
 #  variable names computed by commands at runtime
@@ -16,6 +31,8 @@ we have the following 5 classes of input characters
 """
 
 import types
+from web_shell_exceptions import WebShellUrlParserException
+
 
 INITIAL_STATE = 0 # none
 STRING_STATE = 1 # character
@@ -25,9 +42,6 @@ VARIABLE_BEGIN_STATE = 4 # ${
 VARIABLE_CHARACTER_STATE = 5 # ${character
 
 WHITESPACE_CHARACTERS = ' \t'
-
-class WebShellUrlParserException(Exception):
-	pass
 
 
 class WebShellUrlParser(object):
@@ -219,48 +233,3 @@ class Variable(object):
 		return '${' + self.__text + '}'
 	def __repr__(self):
 		return '${' + self.__text + '}'
-
-
-def main():
-	TEST_CASES = \
-	[ \
-		('asd', "T['asd']"), # string
-		('def {cdb}', "T['def ', T['cdb']]"), # string followed by command
-		('def ${cdb}', "T['def ', ${cdb}]"), # string followed by variable
-		('def {cdb def}', "T['def ', T['cdb', 'def']]"), # string followed by command with argument
-		('def {cdb def hij}', "T['def ', T['cdb', 'def', 'hij']]"), # string followed by command with two argument
-		('{cdb def}', "T[T['cdb', 'def']]"), # command with argument
-		('{${var}abc}', "T[T[T['concatenate', ${var}, 'abc']]]"), # concatenation works within command
-		('${var}abc', "T[T['concatenate', ${var}, 'abc']]"), # concatenation works properly at root level
-		('}', WebShellUrlParserException), # close bracket as first character
-		('{${var}abc {jkaf slkd', WebShellUrlParserException),
-
-
-	]
-
-	for web_shell_url, expected in TEST_CASES:
-
-		print web_shell_url
-		parser = WebShellUrlParser()
-		try:
-			tree = parser.build_tree(web_shell_url)
-			actual = str(tree)
-			print 'EX: ' + expected
-			print 'AC: ' + actual
-			if (actual != expected):
-				print 'ERROR!-----------------'
-		except WebShellUrlParserException, wsupe:
-			if expected is WebShellUrlParserException:
-				print 'EX: (WebShellUrlParserException)'
-				print 'AC: (WebShellUrlParserException)'
-			else:
-				print 'EX: ' + expected
-				print 'AC: ' + 'ERROR: ' + str(wsupe)
-				print 'ERROR!-----------------'	
-				
-		print
-		print
-
-
-if __name__ == '__main__':
-	main()

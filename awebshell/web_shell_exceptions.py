@@ -1,6 +1,7 @@
 # web_shell_exceptions.py - Exceptions in the awebshell library.
 #
 # Copyright 2013 Lee Bush. All rights reserved.
+# Copyright 2013 Michael Jeffrey. All rights reserved.
 # Copyright 2013 AllStruck. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +18,7 @@
 #
 
 class WebShellError(Exception):
-	'''This is the base exception for all exceptoins in the awebshell library.
+	'''This is the base exception for all exceptions in the awebshell library.
 	   By catching this exception, you will also be catching the exception of all of those below.
 	'''
 	pass
@@ -38,3 +39,6 @@ class MissingParameterException(WebShellError):
 class InvalidParameterValueException(WebShellError):
 	pass
 
+
+class WebShellUrlParserException(WebShellError):
+	pass

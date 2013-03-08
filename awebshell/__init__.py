@@ -69,9 +69,9 @@ TODO: Allow more flexible spacing in the swtich statement.
 
 '''
 
-__author__ = "Lee Bush"
-__copyright__ = "Copyright 2013 Lee Bush, all rights reserved. Copyright 2013 AllStruck, all rights reserved."
-__credits__ = ["Lee Bush", "David Monaghan"]
+__author__ = "Lee Bush & Michael Jeffrey"
+__copyright__ = "Copyright 2013 Lee Bush, all rights reserved. Copyright 2013 Michael Jeffrey, all rights reserved. Copyright 2013 AllStruck, all rights reserved."
+__credits__ = ["Lee Bush", "Michael Jeffrey", "David Monaghan"]
 __license__ = "Apache 2.0"
 __version__ = "0.5"
 __maintainer__ = "David Monaghan"
@@ -83,5 +83,7 @@ __status__ = "Development" #TODO: change to "Production" when quality is good en
 
 from WebShell import WebShell
 from web_shell_exceptions import *
+from parser import WebShellUrlParser
+del parser
 del web_shell_exceptions
 

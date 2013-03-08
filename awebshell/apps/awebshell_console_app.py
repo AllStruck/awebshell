@@ -72,7 +72,7 @@ from awebshell import WebShell, WebShellError
 
 def run_one_command(command_database, command_text):
 	web_shell = WebShell(command_database)
-	final_url, can_inline = web_shell.evaluate(command)
+	final_url, can_inline = web_shell.evaluate(command_text)
 	webbrowser.open(final_url)
 
 
@@ -154,7 +154,7 @@ def burn_live_db_gql_to_csv():
 def main():
 	
 	
-	csv_filename = os.path.join(os.path.dirname(sys.argv[0]), 'awebshell/', 'tests', 'test_web_shell_command_database.csv') #TODO: un-hardcode this.
+	csv_filename = os.path.join(os.path.dirname(sys.argv[0]), '..', 'tests', 'test_web_shell_command_database.csv') #TODO: un-hardcode this.
 	command_database = CSVCommandDatabase(csv_filename)
 	
 	arg_count = len(sys.argv)
