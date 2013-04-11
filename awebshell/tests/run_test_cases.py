@@ -27,7 +27,9 @@ TODO: add more test cases to appropriate .csv files.
 
 TODO: convert to use 'unittest' library??
 
+TODO: make a command specific Node
 
+TODO: Make top level node concatenate (until further notice)
 
 '''
 
@@ -106,12 +108,13 @@ def test_parser():
 		# ('def {cdb}', "T['def ', T['cdb']]"), # string followed by command
 		# ('def ${cdb}', "T['def ', ${cdb}]"), # string followed by variable
 		# ('def {cdb def}', "T['def ', T['cdb', 'def']]"), # string followed by command with argument
-		('def {cdb def hij}', "T['def ', T['cdb', 'def', 'hij']]"), # string followed by command with two argument
+		# ('gim {g def hij}', "T['gim', T['g', 'def', 'hij']]"), # string followed by command with two argument
 		# ('{cdb def}', "T[T['cdb', 'def']]"), # command with argument
 		# ('{${var}abc}', "T[T[T['concatenate', ${var}, 'abc']]]"), # concatenation works within command
 		# ('${var}abc', "T[T['concatenate', ${var}, 'abc']]"), # concatenation works properly at root level
 		# ('}', WebShellUrlParserException), # close bracket as first character
 		# ('{${var}abc {jkaf slkd', WebShellUrlParserException),
+		('http://google.com/fasdfasd/{example abc def}', "T['gim', T['g', 'def', 'hij']]"), 
 	]
 
 	number_of_test_cases = 0
@@ -120,13 +123,19 @@ def test_parser():
 
 	for web_shell_url, expected in TEST_CASES:
 
+		csv_filename = 'test_web_shell_command_database.csv' #TODO: un-hardcode this.
+		database = CSVCommandDatabase(csv_filename)
 		# print web_shell_url
 		parser = WebShellUrlParser()
-		executor = WebShellExecutor()
+		executor = WebShellExecutor(database)
+		
 		try:
 			tree = parser.build_tree(web_shell_url)
 			actual = str(tree)
-			executor.execute_tree(tree)
+			executor.execute_tree(tree, (), {'hello': 'world'})
+
+			die
+
 			# print 'AC: ' + actual
 			if (actual != expected):
 				print 'EX: ' + expected

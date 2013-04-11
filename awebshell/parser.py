@@ -228,6 +228,11 @@ class Variable(object):
 
 	def append_text(self, text):
 		self.__text += text
+
+	def get_name(self):
+		return self.__text
+	def get_default_value(self):
+		return None #TODO: stub. None means there is no default, or that it is required.
 	
 	def __str__(self):
 		return '${' + self.__text + '}'
