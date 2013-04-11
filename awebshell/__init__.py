@@ -84,6 +84,7 @@ __status__ = "Development" #TODO: change to "Production" when quality is good en
 from WebShell import WebShell
 from web_shell_exceptions import *
 from parser import WebShellUrlParser
+from WebShellExecutor import *
 del parser
 del web_shell_exceptions
 

@@ -38,7 +38,7 @@ import os
 sys.path.insert(0, os.path.join('..', '..')) #ensure awebshell library is importable, especially if it hasn't been installed yet.
 
 
-from awebshell import WebShell, WebShellError, WebShellUrlParser, WebShellUrlParserException
+from awebshell import WebShell, WebShellError, WebShellUrlParser, WebShellUrlParserException, WebShellExecutor
 from awebshell.database.CSVCommandDatabase import CSVCommandDatabase #select the CSV implementatoin of the command database protocol.
 
 
@@ -102,16 +102,16 @@ def run_test_cases(command_database_filename, test_cases_filename):
 def test_parser():
 	TEST_CASES = \
 	[ \
-		('asd', "T['asd']"), # string
-		('def {cdb}', "T['def ', T['cdb']]"), # string followed by command
-		('def ${cdb}', "T['def ', ${cdb}]"), # string followed by variable
-		('def {cdb def}', "T['def ', T['cdb', 'def']]"), # string followed by command with argument
+		# ('asd', "T['asd']"), # string
+		# ('def {cdb}', "T['def ', T['cdb']]"), # string followed by command
+		# ('def ${cdb}', "T['def ', ${cdb}]"), # string followed by variable
+		# ('def {cdb def}', "T['def ', T['cdb', 'def']]"), # string followed by command with argument
 		('def {cdb def hij}', "T['def ', T['cdb', 'def', 'hij']]"), # string followed by command with two argument
-		('{cdb def}', "T[T['cdb', 'def']]"), # command with argument
-		('{${var}abc}', "T[T[T['concatenate', ${var}, 'abc']]]"), # concatenation works within command
-		('${var}abc', "T[T['concatenate', ${var}, 'abc']]"), # concatenation works properly at root level
-		('}', WebShellUrlParserException), # close bracket as first character
-		('{${var}abc {jkaf slkd', WebShellUrlParserException),
+		# ('{cdb def}', "T[T['cdb', 'def']]"), # command with argument
+		# ('{${var}abc}', "T[T[T['concatenate', ${var}, 'abc']]]"), # concatenation works within command
+		# ('${var}abc', "T[T['concatenate', ${var}, 'abc']]"), # concatenation works properly at root level
+		# ('}', WebShellUrlParserException), # close bracket as first character
+		# ('{${var}abc {jkaf slkd', WebShellUrlParserException),
 	]
 
 	number_of_test_cases = 0
@@ -122,9 +122,12 @@ def test_parser():
 
 		# print web_shell_url
 		parser = WebShellUrlParser()
+		executor = WebShellExecutor()
 		try:
 			tree = parser.build_tree(web_shell_url)
 			actual = str(tree)
+			executor.execute_tree(tree)
+			# print 'AC: ' + actual
 			if (actual != expected):
 				print 'EX: ' + expected
 				print 'AC: ' + actual
